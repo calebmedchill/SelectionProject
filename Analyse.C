@@ -29,13 +29,31 @@ void Analyse::Loop()
 // METHOD2: replace line
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
-	double countVeto = 0; 
-	double countEle = 0;
-	double occPerEvent = 0;
-	double occZero = 0;
-	double occOne = 0;
-	double occTwo = 0;
-	double occMore = 0;
+	
+	//Type casting the variable and assinging it to a new variable and trying to use that
+	vector<float> *elePtAc = (vector<float> *)elePt;
+	double veto = 0;
+	double total = 0;
+	//cout << *elePt.Pop() << " " << endl;
+
+
+	//Dereferencing and then calling size on the array
+	//cout << *elePt.size() << " " << endl;	
+	
+	//Dereferencing and then calling size on the array
+	//cout << *elePt->size() << " " << endl;		
+
+	//This was to see if it was an array.	
+	//cout << elePt[0] << " " << endl;
+
+	//This works but gives a size of 0
+	//cout << eleEn->size() << " " << endl;
+		
+	//Using iterators
+	//cout << *elePt->begin() << endl;
+	//cout << *elePt->end() << endl;
+
+	//vector<float> elePtVec = *elePT; 
 	if (fChain == 0) return;
 
 	Long64_t nentries = fChain->GetEntriesFast();
@@ -45,38 +63,21 @@ void Analyse::Loop()
 		Long64_t ientry = LoadTree(jentry);
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
-		// if (Cut(ientry) < 0) continue;
-		for (int i =0; i < nGen; i++){
-			//cout<<"genID: " << abs(genID[i]) << endl;
-			if (abs(genID[i]) == 11){
-				countEle++;
-				occPerEvent = 0;
-				for (int j = 0; j <nGen; j++){
-					if (abs(genID[j]) == 22 && (genPt[j] > 15 && genPt[j] < 200)){
-						countVeto++;
-						cout<< 	"Current Count:" << countVeto << endl;
-						occPerEvent++;
-					}
-				}
-				if (occPerEvent == 0){
-					occZero++;
-				}
-				if(occPerEvent == 1){
-					occOne++;
-				}
-				if (occPerEvent == 2){
-					occTwo++;
-				}
-				if (occPerEvent > 2){
-					occMore++;
-				}
+		//cout << elePt->size() << " " << endl;		
+		cout << "Vector Size: " << phoEt->size() << " " << endl;		
+		//This loop does not end		
 				
+		//cout << phoE->at(0) << " " << endl;
+		total = total + 1;	
+		for (auto i = 0; i < phoEt->size(); i++){
+			//cout << "Count: " << i << " "<< endl;
+			cout << phoEt->at(i) << " "<< endl;
+			if(phoEt->at(i) > 15 && nEle>0){
+				veto=veto + 1;
+				i=1000;
 			}
 		}
+		// if (Cut(ientry) < 0) continue;
 	}
-	cout << "countEle: " << countEle << " countVeto: " << countVeto << " Ratio: " << countVeto/countEle << endl;
-	cout << "Events with 0: " << occZero << endl;
-	cout << "Events with 1: " << occOne << endl;
-	cout << "Events with 2: " << occTwo << endl;
-	cout << "Events with >2: " << occMore << endl;
+	cout<< "Total Events: " << total << " Vetoed Events: " << veto << " Ratio: " << veto/total << endl; 
 }
